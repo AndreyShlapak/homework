@@ -1,0 +1,11 @@
+<div>
+    <h1>Users</h1>
+    {{#each users }}
+        <a href="/users/{{this.id}}">{{this.name}}</a>
+    {{/each}}
+
+    <h1>Cars</h1>
+    {{#each cars }}
+        <a href="/cars/{{this.id}}">{{this.name}}</a>
+    {{/each}}
+</div>
