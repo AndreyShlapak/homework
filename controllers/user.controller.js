@@ -17,16 +17,11 @@ module.exports = {
     },
     dropUserById: (req, res) => {
         const {userId} = req.params;
-        const newUsers = [];
+        const userIndex = users.findIndex((currentUser) => currentUser.id === userId);
 
-        for (const currentUserIndex in users) {
-            if (users[currentUserIndex].id === userId) {
-                delete users[currentUserIndex];
-                continue;
-            }
-            newUsers.push(users[currentUserIndex]);
-        }
-        write(UserPathDB, newUsers);
+        delete users[userIndex];
+
+        write(UserPathDB, users.filter((user) => user));
 
         res.redirect('http://localhost:5000/');
     },
