@@ -19,9 +19,9 @@ module.exports = {
         const {userId} = req.params;
         const userIndex = users.findIndex((currentUser) => currentUser.id === userId);
 
-        delete users[userIndex];
+        users.splice(userIndex, 1);
 
-        write(UserPathDB, users.filter((user) => user));
+        write(UserPathDB, users);
 
         res.redirect('http://localhost:5000/');
     },
