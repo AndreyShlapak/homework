@@ -19,9 +19,9 @@ module.exports = {
         const {carId} = req.params;
         const carIndex = cars.findIndex((currentCar) => currentCar.id === carId);
 
-        delete cars[carIndex];
+        cars.splice(carIndex, 1);
 
-        write(CarPathDB, cars.filter((car) => car));
+        write(CarPathDB, cars);
 
         res.redirect('http://localhost:5000/');
     },
