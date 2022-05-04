@@ -17,16 +17,11 @@ module.exports = {
     },
     dropCarById: (req, res) => {
         const {carId} = req.params;
-        const newCars = [];
+        const carIndex = cars.findIndex((currentCar) => currentCar.id === carId);
 
-        for (const currentCarIndex in cars) {
-            if (cars[currentCarIndex].id === carId) {
-                delete cars[currentCarIndex];
-                continue;
-            }
-            newCars.push(cars[currentCarIndex]);
-        }
-        write(CarPathDB, newCars);
+        delete cars[carIndex];
+
+        write(CarPathDB, cars.filter((car) => car));
 
         res.redirect('http://localhost:5000/');
     },
