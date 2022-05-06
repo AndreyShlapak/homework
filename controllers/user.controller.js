@@ -1,49 +1,38 @@
-const users = require('../DB/users.json');
-const write = require('../services/jsonChange');
-const {UserPathDB} = require('../config/config');
+const User = require('../DB/User.model');
 
 module.exports = {
-    showAllUsers: (req, res) => {
+    showAllUsers: async (req, res) => {
+        const users = await User.find({}).lean();
+
         res.render('users', {users});
     },
-    getUserById: (req, res) => {
-        const {userId} = req.params
+    getUserById: async (req, res) => {
+        const {userId} = req.params;
+        const user = await User.findById(userId);
 
-        for (const currentUser of users) {
-            if (currentUser.id == userId) {
-                res.json(currentUser);
-            }
-        }
+        res.json(user);
     },
     dropUserById: (req, res) => {
         const {userId} = req.params;
-        const userIndex = users.findIndex((currentUser) => currentUser.id === userId);
 
-        users.splice(userIndex, 1);
-
-        write(UserPathDB, users);
-
-        res.redirect('http://localhost:5000/');
+        User.findByIdAndDelete(userId)
+            .then(user => {
+                res.redirect('http://localhost:5000/users');
+            });
     },
     createUser: (req, res) => {
-        users.push(req.body);
-
-        write(UserPathDB, users);
-
-        res.redirect('http://localhost:5000/');
+        User.create(req.body)
+            .then(createdUser => {
+                res.status(201).json(createdUser);
+            })
+            .catch((err) => console.error(err));
     },
     updateUser: (req, res) => {
         const {userId} = req.params;
 
-        for (const currentUserIndex in users) {
-            const currentUser = users[currentUserIndex];
-
-            if (currentUser.id == userId) {
-                currentUser.name = req.body.name;
-            }
-        }
-        write(UserPathDB, users);
-
-        res.redirect('http://localhost:5000/');
+        User.findByIdAndUpdate(userId, req.body)
+            .then((user) => {
+                res.redirect('http://localhost:5000/users');
+            });
     }
 }
