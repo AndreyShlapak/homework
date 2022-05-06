@@ -1,49 +1,38 @@
-const cars = require('../DB/cars.json');
-const write = require("../services/jsonChange");
-const {CarPathDB} = require("../config/config");
+const Car = require('../DB/Car.model');
 
 module.exports = {
-    showAllCars: (req, res) => {
-        res.render('cars', { cars });
-    },
-    getCarById: (req, res) => {
-        const {carId} = req.params
+    showAllCars: async (req, res) => {
+        const cars = await Car.find({}).lean();
 
-        for (const currentCar of cars) {
-            if (currentCar.id == carId) {
-                res.json(currentCar);
-            }
-        }
+        res.render('cars', {cars});
+    },
+    getCarById: async (req, res) => {
+        const {carId} = req.params;
+        const car = await Car.findById(carId);
+
+        res.json(car);
     },
     dropCarById: (req, res) => {
         const {carId} = req.params;
-        const carIndex = cars.findIndex((currentCar) => currentCar.id === carId);
 
-        cars.splice(carIndex, 1);
-
-        write(CarPathDB, cars);
-
-        res.redirect('http://localhost:5000/');
+        Car.findByIdAndDelete(carId)
+            .then(car => {
+                res.redirect('http://localhost:5000/cars');
+            });
     },
     createCar: (req, res) => {
-        cars.push(req.body);
-
-        write(CarPathDB, cars);
-
-        res.redirect('http://localhost:5000/');
+        Car.create(req.body)
+            .then(createdCar => {
+                res.status(201).json(createdCar);
+            })
+            .catch((err) => console.error(err));
     },
     updateCar: (req, res) => {
         const {carId} = req.params;
 
-        for (const currentCarIndex in cars) {
-            const currentCar = cars[currentCarIndex];
-
-            if (currentCar.id == carId) {
-                currentCar.name = req.body.name;
-            }
-        }
-        write(CarPathDB, cars);
-
-        res.redirect('http://localhost:5000/');
+        Car.findByIdAndUpdate(carId, req.body)
+            .then((car) => {
+                res.redirect('http://localhost:5000/cars');
+            });
     }
 }

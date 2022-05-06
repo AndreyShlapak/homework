@@ -25,7 +25,6 @@ const checkIsIdCorrect = (req, res, next) => {
         const {userId} = req.params;
 
         if (userId.length !== 24) {
-            console.log(1123)
             throw new Error('Id is incorrect');
         }
         next();
