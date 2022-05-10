@@ -7,11 +7,11 @@ const userRouter = Router();
 
 userRouter.get('/', userController.showAllUsers);
 
+userRouter.post('/', userMiddlewares.checkIsEmailDuplicate, userController.createUser);
+
 userRouter.get('/:userId',userMiddlewares.checkIsIdCorrect, userController.getUserById);
 
 userRouter.delete('/:userId',userMiddlewares.checkIsIdCorrect, userController.dropUserById);
-
-userRouter.post('/', userMiddlewares.checkIsEmailDuplicate, userController.createUser);
 
 userRouter.put('/:userId', userMiddlewares.checkIsIdCorrect, userMiddlewares.checkIsCorrectBodyForUpdate, userController.updateUser);
 

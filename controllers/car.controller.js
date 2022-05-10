@@ -1,4 +1,5 @@
 const Car = require('../DB/Car.model');
+const {raw} = require("express");
 
 module.exports = {
     showAllCars: async (req, res) => {
@@ -12,27 +13,21 @@ module.exports = {
 
         res.json(car);
     },
-    dropCarById: (req, res) => {
+    dropCarById: async (req, res) => {
         const {carId} = req.params;
+        const deletedCar = await Car.findByIdAndDelete(carId);
 
-        Car.findByIdAndDelete(carId)
-            .then(car => {
-                res.redirect('http://localhost:5000/cars');
-            });
+        res.json(deletedCar).status(204);
     },
-    createCar: (req, res) => {
-        Car.create(req.body)
-            .then(createdCar => {
-                res.status(201).json(createdCar);
-            })
-            .catch((err) => console.error(err));
+    createCar: async (req, res) => {
+        const createdCar = await Car.create(req.body);
+
+        res.status(201).json(createdCar);
     },
-    updateCar: (req, res) => {
+    updateCar: async (req, res) => {
         const {carId} = req.params;
+        const updatedUser = await Car.findByIdAndUpdate(carId, req.body);
 
-        Car.findByIdAndUpdate(carId, req.body)
-            .then((car) => {
-                res.redirect('http://localhost:5000/cars');
-            });
+        res.json(updatedUser).status(204);
     }
 }

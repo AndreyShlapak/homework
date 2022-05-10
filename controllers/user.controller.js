@@ -12,27 +12,21 @@ module.exports = {
 
         res.json(user);
     },
-    dropUserById: (req, res) => {
+    dropUserById: async (req, res) => {
         const {userId} = req.params;
+        const deletedUser = await User.findByIdAndDelete(userId);
 
-        User.findByIdAndDelete(userId)
-            .then(user => {
-                res.redirect('http://localhost:5000/users');
-            });
+        res.json(deletedUser).status(204);
     },
-    createUser: (req, res) => {
-        User.create(req.body)
-            .then(createdUser => {
-                res.status(201).json(createdUser);
-            })
-            .catch((err) => console.error(err));
+    createUser: async (req, res) => {
+        const createdUser = await User.create(req.body);
+
+        res.status(201).json(createdUser);
     },
-    updateUser: (req, res) => {
+    updateUser: async (req, res) => {
         const {userId} = req.params;
+        const updatedUser = await User.findByIdAndUpdate(userId, req.body);
 
-        User.findByIdAndUpdate(userId, req.body)
-            .then((user) => {
-                res.redirect('http://localhost:5000/users');
-            });
+        res.json(updatedUser).status(204);
     }
 }
