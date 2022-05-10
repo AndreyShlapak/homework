@@ -1,6 +1,10 @@
 <div>
     <h1>Users</h1>
-    {{#each users }}
+    <h3>Page: {{usersInfo.page}}</h3>
+    <h3>PerPage: {{usersInfo.perPage}}</h3>
+    <h3>Data: </h3>
+    {{#each usersInfo.data }}
         <a href="/users/{{this._id}}">{{this.name}}</a>
     {{/each}}
+    <h3>Count: {{usersInfo.count}}</h3>
 </div>

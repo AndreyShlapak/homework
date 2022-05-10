@@ -9,12 +9,13 @@ module.exports = {
             const users = await User.find().limit(limit).skip(skip).lean();
             const count = await User.count({}).lean();
 
-            res.render('users', {
+            res.json({
                 page,
                 perPage: limit,
                 data: users,
                 count
             });
+
         } catch (e) {
             next(e);
         }

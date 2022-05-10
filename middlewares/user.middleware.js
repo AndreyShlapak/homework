@@ -39,7 +39,7 @@ const checkIsCorrectBody = (req, res, next) => {
     try {
         const {name = '', email = '' } = req.body;
 
-        if (!(name || email)) {
+        if (!(name && email)) {
             throw new ApiError('Name or email are empty', 400);
         }
 

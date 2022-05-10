@@ -1,32 +1,65 @@
 const Car = require('../DB/Car.model');
 
 module.exports = {
-    showAllCars: async (req, res) => {
-        const cars = await Car.find({}).lean();
+    showAllCars: async (req, res, next) => {
+        try {
+            const { limit = 20, page = 1 } = req.query;
+            const skip = (page - 1) * limit;
 
-        res.render('cars', {cars});
+            const cars = await Car.find().limit(limit).skip(skip).lean();
+            const count = await Car.count({}).lean();
+
+            res.json({
+                page,
+                perPage: limit,
+                data: cars,
+                count
+            });
+        } catch (e) {
+            next(e);
+        }
     },
-    getCarById: async (req, res) => {
-        const {carId} = req.params;
-        const car = await Car.findById(carId);
+    getCarById: async (req, res, next) => {
+        try {
+            const {carId} = req.params;
+            const car = req.car || await Car.findById(carId);
 
-        res.json(car);
+            res.json(car);
+
+        } catch (e) {
+            next(e);
+        }
     },
-    dropCarById: async (req, res) => {
-        const {carId} = req.params;
-        const deletedCar = await Car.findByIdAndDelete(carId);
+    dropCarById: async (req, res, next) => {
+        try {
+            const {carId} = req.params;
+            const deletedCar = await Car.findByIdAndDelete(carId);
 
-        res.json(deletedCar).status(204);
+            res.json(deletedCar).status(204);
+
+        } catch (e) {
+            next(e);
+        }
     },
-    createCar: async (req, res) => {
-        const createdCar = await Car.create(req.body);
+    createCar: async (req, res, next) => {
+        try {
+            const createdCar = await Car.create(req.body);
 
-        res.status(201).json(createdCar);
+            res.status(201).json(createdCar);
+
+        } catch (e) {
+            next(e);
+        }
     },
-    updateCar: async (req, res) => {
-        const {carId} = req.params;
-        const updatedUser = await Car.findByIdAndUpdate(carId, req.body);
+    updateCar: async (req, res, next) => {
+        try {
+            const {carId} = req.params;
+            const updatedCar = await Car.findByIdAndUpdate(carId, req.body);
 
-        res.json(updatedUser).status(204);
+            res.json(updatedCar).status(204);
+
+        } catch (e) {
+            next(e);
+        }
     }
 }

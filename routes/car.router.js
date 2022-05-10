@@ -8,8 +8,9 @@ const carRouter = Router();
 carRouter.get('/', carController.showAllCars);
 carRouter.post('/', carMiddlewares.checkIsCorrectBody, carController.createCar);
 
-carRouter.get('/:carId', carMiddlewares.checkIsIdCorrect, carController.getCarById);
+carRouter.all('/:carId', carMiddlewares.checkIsIdCorrect, carMiddlewares.checkIsCarPresent);
+carRouter.get('/:carId', carController.getCarById);
 carRouter.delete('/:carId', carMiddlewares.checkIsIdCorrect, carController.dropCarById);
-carRouter.put('/:carId', carMiddlewares.checkIsIdCorrect, carMiddlewares.checkIsCorrectBody, carController.updateCar);
+carRouter.put('/:carId', carMiddlewares.checkIsCorrectBody, carController.updateCar);
 
 module.exports = carRouter;
