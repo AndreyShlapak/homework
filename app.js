@@ -1,13 +1,16 @@
 const express = require('express');
 const {engine} = require('express-handlebars');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const Car = require('./DB/Car.model');
 const User = require('./DB/User.model');
 const userRouter = require('./routes/user.router');
 const carRouter = require('./routes/car.router');
-const {PORT} = require('./config/config');
-const {MongoURL} = require('./config/config');
+const {MongoURL, PORT} = require('./config/config');
+const ApiError = require('./error/ApiError');
 
 const app = express();
 
@@ -22,23 +25,39 @@ mongoose.connect(MongoURL).then(() => {
     console.log('Connection DB success');
 });
 
+app.get('/', main);
 app.use('/users', userRouter);
 app.use('/cars', carRouter);
+app.use('*', _notFoundHandler);
 
-async function main() {
-    const users = await User.find({}).lean();
-    const cars = await Car.find({}).lean();
-    return {users, cars};
+app.use(_mainErrorHandler);
+
+function _notFoundHandler(req, res, next) {
+    next(new ApiError('Not found', 404));
 }
 
-app.get('/', async (req, res) => {
+function _mainErrorHandler(err, req, res, next) {
+    console.log('____________________________-');
+    console.log(err.stack);
+    console.log('____________________________-');
+
+    res
+        .status(err.status || 500)
+        .json({
+            message: err.message || 'Server error',
+            status: err.status,
+            data: {}
+        });
+}
+
+async function main (req, res) {
     const users = await User.find({}).lean();
     const cars = await Car.find({}).lean();
 
     res.render('welcome', {users, cars});
-});
+}
 
 app.listen(PORT, () => {
-    console.log('Server started...')
+    console.log('Server started...');
 });
 

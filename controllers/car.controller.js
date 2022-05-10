@@ -1,5 +1,4 @@
 const Car = require('../DB/Car.model');
-const {raw} = require("express");
 
 module.exports = {
     showAllCars: async (req, res) => {

@@ -7,6 +7,7 @@ const checkIsIdCorrect = (req, res, next) => {
         if (carId.length !== 24) {
             throw new Error('Id is incorrect');
         }
+
         next();
     } catch (e) {
         res.json(e.message);
