@@ -1,4 +1,5 @@
-const User = require('../DB/User.model');
+const { User } = require('../DB/');
+const { authService } = require('../services');
 
 module.exports = {
     showAllUsers: async (req, res, next) => {
@@ -44,7 +45,9 @@ module.exports = {
     },
     createUser: async (req, res, next) => {
         try {
-            const createdUser = await User.create(req.body);
+            const hashPassword = await authService.hashPassword(req.body.password);
+
+            const createdUser = await User.create({...req.body, password: hashPassword});
 
             res.status(201).json(createdUser);
 

@@ -1,27 +1,34 @@
-const Car = require('../DB/Car.model');
-const ApiError = require("../error/ApiError");
+const { Car } = require('../DB');
+const ApiError = require('../error/ApiError');
+const {carValidator} = require('../validators');
+const { errorsEnum } = require('../constants');
 
-const checkIsIdCorrect = (req, res, next) => {
+const checkIsQueryParamsValid = (req, res, next) => {
     try {
-        const {carId} = req.params;
+        const [message, status] = Object.values(errorsEnum.WRONG_QUERY_PARAMS);
+        const queryParams = ['page', 'limit'];
 
-        if (carId.length !== 24) {
-            throw new ApiError('Id is incorrect', 400);
+        for (const param in req.query) {
+            if (!(queryParams.includes(param))) {
+                throw new ApiError(message, status);
+            }
         }
-
         next();
+
     } catch (e) {
         next(e);
     }
 }
 
-const checkIsCorrectBody = (req, res, next) => {
+const checkIsIdLengthCorrect = (req, res, next) => {
     try {
-        const {name = '', color = '' } = req.body;
+        const {carId} = req.params;
+        const [message, status] = Object.values(errorsEnum.INCORRECT_ID);
 
-        if (!(name && color)) {
-            throw new ApiError('Name or color are empty', 400);
+        if (carId.length !== 24) {
+            throw new ApiError(message, status);
         }
+
         next();
     } catch (e) {
         next(e);
@@ -32,9 +39,10 @@ const checkIsCarPresent = async (req, res, next) => {
     try {
         const { carId } = req.params;
         const carById = await Car.findById(carId);
+        const [message, status] = Object.values(errorsEnum.CAR_NOT_FOUND);
 
         if (!carById) {
-            throw new ApiError('Car not found', 404);
+            throw new ApiError(message, status);
         }
 
         req.car = carById;
@@ -45,8 +53,44 @@ const checkIsCarPresent = async (req, res, next) => {
     }
 }
 
+const newCarValidator = (req, res, next) => {
+    try {
+        const { error, value } = carValidator.newCarJoiSchema.validate(req.body);
+
+        if (error) {
+            next(new ApiError(error.details[0].message, 400));
+            return;
+        }
+
+        req.body = value;
+
+        next()
+    } catch (e) {
+        next(e)
+    }
+}
+
+const updateCarValidator = (req, res, next) => {
+    try {
+        const { error, value } = carValidator.updateCarJoiSchema.validate(req.body);
+
+        if (error) {
+            next(new ApiError(error.details[0].message, 400));
+            return;
+        }
+
+        req.body = value;
+
+        next()
+    } catch (e) {
+        next(e)
+    }
+}
+
 module.exports = {
-    checkIsIdCorrect,
-    checkIsCorrectBody,
-    checkIsCarPresent
+    checkIsIdLengthCorrect,
+    checkIsCarPresent,
+    newCarValidator,
+    checkIsQueryParamsValid,
+    updateCarValidator
 }

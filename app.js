@@ -5,10 +5,8 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const Car = require('./DB/Car.model');
-const User = require('./DB/User.model');
-const userRouter = require('./routes/user.router');
-const carRouter = require('./routes/car.router');
+const { Car, User } = require('./DB');
+const { carRouter, userRouter } = require('./routes/');
 const {MongoURL, PORT} = require('./config/config');
 const ApiError = require('./error/ApiError');
 
@@ -50,7 +48,7 @@ function _mainErrorHandler(err, req, res, next) {
         });
 }
 
-async function main (req, res) {
+async function main(req, res) {
     const users = await User.find({}).lean();
     const cars = await Car.find({}).lean();
 
