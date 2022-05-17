@@ -3,23 +3,6 @@ const ApiError = require('../error/ApiError');
 const { userValidator } = require('../validators');
 const { errorsEnum } = require('../constants');
 
-const checkIsQueryParamsValid = (req, res, next) => {
-    try {
-        const [message, status] = Object.values(errorsEnum.WRONG_QUERY_PARAMS);
-        const queryParams = ['page', 'limit'];
-
-        for (const param in req.query) {
-            if (!(queryParams.includes(param))) {
-                throw new ApiError(message, status);
-            }
-        }
-        next();
-
-    } catch (e) {
-        next(e);
-    }
-}
-
 const checkIsEmailDuplicate = async (req, res, next) => {
     try {
         const { email } = req.body;
@@ -111,6 +94,5 @@ module.exports = {
     checkIsIdCorrect,
     checkIsUserPresent,
     newUserValidator,
-    checkIsQueryParamsValid,
     updateUserValidator
 }

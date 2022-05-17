@@ -35,9 +35,7 @@ function _notFoundHandler(req, res, next) {
 }
 
 function _mainErrorHandler(err, req, res, next) {
-    console.log('____________________________-');
     console.log(err.stack);
-    console.log('____________________________-');
 
     res
         .status(err.status || 500)

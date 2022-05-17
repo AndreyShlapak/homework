@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('joi');
 
 const { constants } = require('../constants');
 
@@ -22,11 +22,10 @@ const newUserJoiSchema = Joi.object({
 const updateUserJoiSchema = Joi.object({
     name: Joi.string().alphanum().min(2).max(50).trim(),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: [
-                'com',
-                'net'
-            ] } }).trim().lowercase(),
+        'com',
+        'net'
+    ] } }).trim().lowercase(),
     age: Joi.number().integer().min(6),
-    password: Joi.string().regex(constants.PASSWORD_REGEXP),
     cars: Joi.array().items(userCarSubSchema, Joi.string()),
     girl: Joi.boolean()
 });

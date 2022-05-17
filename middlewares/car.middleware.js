@@ -3,23 +3,6 @@ const ApiError = require('../error/ApiError');
 const {carValidator} = require('../validators');
 const { errorsEnum } = require('../constants');
 
-const checkIsQueryParamsValid = (req, res, next) => {
-    try {
-        const [message, status] = Object.values(errorsEnum.WRONG_QUERY_PARAMS);
-        const queryParams = ['page', 'limit'];
-
-        for (const param in req.query) {
-            if (!(queryParams.includes(param))) {
-                throw new ApiError(message, status);
-            }
-        }
-        next();
-
-    } catch (e) {
-        next(e);
-    }
-}
-
 const checkIsIdLengthCorrect = (req, res, next) => {
     try {
         const {carId} = req.params;
@@ -91,6 +74,5 @@ module.exports = {
     checkIsIdLengthCorrect,
     checkIsCarPresent,
     newCarValidator,
-    checkIsQueryParamsValid,
     updateCarValidator
 }
