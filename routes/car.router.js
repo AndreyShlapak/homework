@@ -2,11 +2,11 @@ const { Router } = require('express');
 
 const { carController } = require('../controllers');
 const { carMiddlewares } = require('../middlewares');
-const { commonMiddlewares } = require('../middlewares');
+const { commonMiddleware } = require('../middlewares');
 
 const carRouter = Router();
 
-carRouter.get('/', commonMiddlewares.checkIsQueryParamsValid, carController.showAllCars);
+carRouter.get('/', commonMiddleware.checkIsQueryParamsValid, carController.showAllCars);
 carRouter.post('/', carMiddlewares.newCarValidator, carController.createCar);
 
 carRouter.all('/:carId', carMiddlewares.checkIsIdLengthCorrect, carMiddlewares.checkIsCarPresent);

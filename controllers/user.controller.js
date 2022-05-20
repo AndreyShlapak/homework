@@ -21,6 +21,7 @@ module.exports = {
             next(e);
         }
     },
+
     getUserById: async (req, res, next) => {
         try {
             const {userId} = req.params;
@@ -32,6 +33,7 @@ module.exports = {
             next(e);
         }
     },
+
     dropUserById: async (req, res, next) => {
         try {
             const {userId} = req.params;
@@ -43,6 +45,7 @@ module.exports = {
             next(e);
         }
     },
+
     createUser: async (req, res, next) => {
         try {
             const hashPassword = await authService.hashPassword(req.body.password);
@@ -55,6 +58,7 @@ module.exports = {
             next(e);
         }
     },
+
     updateUser: async (req, res, next) => {
         try {
             const {userId} = req.params;

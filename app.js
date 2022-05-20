@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { Car, User } = require('./DB');
-const { carRouter, userRouter } = require('./routes/');
+const { authRouter, carRouter, userRouter } = require('./routes/');
 const {MongoURL, PORT} = require('./config/config');
 const ApiError = require('./error/ApiError');
 
@@ -24,6 +24,7 @@ mongoose.connect(MongoURL).then(() => {
 });
 
 app.get('/', main);
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/cars', carRouter);
 app.use('*', _notFoundHandler);

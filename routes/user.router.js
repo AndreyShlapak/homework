@@ -1,17 +1,17 @@
 const { Router } = require('express');
 
 const { userController } = require('../controllers');
-const { userMiddlewares } = require('../middlewares');
-const { commonMiddlewares } = require('../middlewares');
+const { userMiddleware } = require('../middlewares');
+const { commonMiddleware } = require('../middlewares');
 
 const userRouter = Router();
 
-userRouter.get('/', commonMiddlewares.checkIsQueryParamsValid, userController.showAllUsers);
-userRouter.post('/', userMiddlewares.checkIsEmailDuplicate, userMiddlewares.newUserValidator, userController.createUser);
+userRouter.get('/', commonMiddleware.checkIsQueryParamsValid, userController.showAllUsers);
+userRouter.post('/', userMiddleware.checkIsEmailDuplicate, userMiddleware.newUserValidator, userController.createUser);
 
-userRouter.all('/:userId', userMiddlewares.checkIsIdCorrect, userMiddlewares.checkIsUserPresent);
+userRouter.all('/:userId', userMiddleware.checkIsIdCorrect, userMiddleware.checkIsUserPresent);
 userRouter.get('/:userId', userController.getUserById);
 userRouter.delete('/:userId', userController.dropUserById);
-userRouter.put('/:userId', userMiddlewares.checkIsEmailDuplicate, userMiddlewares.updateUserValidator, userController.updateUser);
+userRouter.put('/:userId', userMiddleware.checkIsEmailDuplicate, userMiddleware.updateUserValidator, userController.updateUser);
 
 module.exports = userRouter;

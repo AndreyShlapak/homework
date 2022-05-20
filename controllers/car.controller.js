@@ -19,6 +19,7 @@ module.exports = {
             next(e);
         }
     },
+
     getCarById: async (req, res, next) => {
         try {
             const {carId} = req.params;
@@ -30,6 +31,7 @@ module.exports = {
             next(e);
         }
     },
+
     dropCarById: async (req, res, next) => {
         try {
             const {carId} = req.params;
@@ -41,6 +43,7 @@ module.exports = {
             next(e);
         }
     },
+
     createCar: async (req, res, next) => {
         try {
             const createdCar = await Car.create(req.body);
@@ -51,6 +54,7 @@ module.exports = {
             next(e);
         }
     },
+
     updateCar: async (req, res, next) => {
         try {
             const {carId} = req.params;

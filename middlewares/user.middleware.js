@@ -89,10 +89,37 @@ const updateUserValidator = (req, res, next) => {
     }
 }
 
+const getUserDynamically = (paramName = '_id', where = 'body', dataBaseField = paramName) => {
+    return async (req, res, next) => {
+        try {
+            const findObject = req[where];
+
+            if (!findObject || typeof findObject !== "object") {
+                throw new ApiError('Wrong search param in middleware');
+            }
+
+            const param = findObject[paramName];
+
+            const user = await User.findOne({ [dataBaseField]: param }).select("+password");
+
+            if (!user) {
+                throw new ApiError('User not found', 404);
+            }
+
+            req.user = user;
+
+            next()
+        } catch (e) {
+            next(e)
+        }
+    }
+}
+
 module.exports = {
     checkIsEmailDuplicate,
     checkIsIdCorrect,
     checkIsUserPresent,
     newUserValidator,
-    updateUserValidator
+    updateUserValidator,
+    getUserDynamically
 }
