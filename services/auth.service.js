@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const ApiError = require('../error/ApiError');
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('../config/config');
+const { tokenTypeEnum } = require('../constants');
 
 async function comparePasswords(hashPassword, password) {
     const isPasswordSame = await bcrypt.compare(password, hashPassword);
@@ -26,8 +27,23 @@ function generateTokenPair(encodeData = {}) {
     }
 }
 
+function validateToken(token, tokenType) {
+    try {
+        let secretWord = ACCESS_TOKEN_SECRET;
+
+        if (tokenType === tokenTypeEnum.REFRESH) {
+            secretWord = REFRESH_TOKEN_SECRET
+        }
+
+        return jwt.verify(token, secretWord);
+    } catch (e) {
+        throw new ApiError(e.message || 'Invalid token', 401);
+    }
+}
+
 module.exports = {
     comparePasswords,
     hashPassword,
-    generateTokenPair
+    generateTokenPair,
+    validateToken
 }
