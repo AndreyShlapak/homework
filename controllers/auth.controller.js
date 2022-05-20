@@ -22,7 +22,7 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
     try {
-        await OAuth.deleteMany({ user_id: req.authUser._id });
+        await OAuth.deleteOne({ user_id: req.authUser._id });
 
         res.json('ok')
     } catch (e) {

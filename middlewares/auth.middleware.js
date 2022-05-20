@@ -20,21 +20,26 @@ function isLoginDataValid(req, res, next) {
     }
 }
 
-function checkToken(tokenType = tokenTypeEnum.ACCESS, token_field = 'access_token') {
+function checkToken(tokenType = tokenTypeEnum.ACCESS) {
+    const switchToken = {
+        [tokenTypeEnum.ACCESS] : 'access_token',
+        [tokenTypeEnum.REFRESH] : 'refresh_token'
+    };
+
     return async (req, res, next) => {
         try {
             const token = req.get('Authorization');
 
             if (!token) {
-                throw new ApiError(NO_TOKEN.message, NO_TOKEN.message);
+                throw new ApiError(NO_TOKEN.message, NO_TOKEN.status);
             }
 
             authService.validateToken(token, tokenType);
 
-            const tokenData = await OAuth.findOne({ [token_field] : token }).populate('user_id');
+            const tokenData = await OAuth.findOne({ [switchToken[tokenType]] : token }).populate('user_id');
 
             if (!tokenData || !tokenData.user_id) {
-                throw new ApiError(NOT_VALID_TOKEN.message, NOT_VALID_TOKEN.message);
+                throw new ApiError(NOT_VALID_TOKEN.message, NOT_VALID_TOKEN.status);
             }
 
             req.authUser = tokenData.user_id;
