@@ -2,7 +2,7 @@ const { authService } = require('../services');
 const { authValidator } = require('../validators');
 const OAuth = require('../DB/OAuth.model');
 const ApiError = require('../error/ApiError');
-const { tokenTypeEnum } = require('../constants');
+const { tokenTypeEnum, errorsEnum: {NO_TOKEN, NOT_VALID_TOKEN} } = require('../constants');
 
 function isLoginDataValid(req, res, next) {
     try {
@@ -20,21 +20,21 @@ function isLoginDataValid(req, res, next) {
     }
 }
 
-function checkToken(tokenType = tokenTypeEnum.ACCESS) {
+function checkToken(tokenType = tokenTypeEnum.ACCESS, token_field = 'access_token') {
     return async (req, res, next) => {
         try {
-            const refresh_token = req.get('Authorization');
+            const token = req.get('Authorization');
 
-            if (!refresh_token) {
-                throw new ApiError('No token', 401);
+            if (!token) {
+                throw new ApiError(NO_TOKEN.message, NO_TOKEN.message);
             }
 
-            authService.validateToken(refresh_token, tokenType);
+            authService.validateToken(token, tokenType);
 
-            const tokenData = await OAuth.findOne({ refresh_token }).populate('user_id');
+            const tokenData = await OAuth.findOne({ [token_field] : token }).populate('user_id');
 
             if (!tokenData || !tokenData.user_id) {
-                throw new ApiError('Not valid token', 401);
+                throw new ApiError(NOT_VALID_TOKEN.message, NOT_VALID_TOKEN.message);
             }
 
             req.authUser = tokenData.user_id;

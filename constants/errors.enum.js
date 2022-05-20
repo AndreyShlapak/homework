@@ -26,5 +26,13 @@ module.exports = {
     USER_ALREADY_PRESENT: {
         message: 'User with this email already present',
         status: 409
+    },
+    NO_TOKEN: {
+        message: 'No token',
+        status: 401
+    },
+    NOT_VALID_TOKEN: {
+        message: 'Not valid token',
+        status: 401
     }
 }

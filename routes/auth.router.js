@@ -21,7 +21,7 @@ authRouter.post(
 
 authRouter.post(
     '/refresh',
-    authMiddleware.checkToken(tokenTypeEnum.REFRESH),
+    authMiddleware.checkToken(tokenTypeEnum.REFRESH, 'refresh_token'),
     authController.refresh
 );
 
