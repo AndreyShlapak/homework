@@ -3,5 +3,6 @@ module.exports = {
     carTypesEnum: require('./car-types.enum'),
     constants: require('./constants'),
     errorsEnum: require('./errors.enum'),
-    tokenTypeEnum: require('./token-type.enum')
+    tokenTypeEnum: require('./token-type.enum'),
+    emailActionsEnum: require('./email-actions.enum')
 }

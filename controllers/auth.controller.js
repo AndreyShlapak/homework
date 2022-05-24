@@ -1,4 +1,5 @@
-const { authService } = require('../services');
+const { emailActionsEnum } = require('../constants');
+const { authService, emailService } = require('../services');
 const OAuth = require('../DB/OAuth.model');
 
 const login = async (req, res, next) => {
@@ -6,6 +7,8 @@ const login = async (req, res, next) => {
         const { user, body: { password } } = req;
 
         await authService.comparePasswords(user.password, password);
+
+        await emailService.sendMail('andreyshlapak12@gmail.com', emailActionsEnum.WELCOME);
 
         const tokenPair = authService.generateTokenPair({ userId: user._id });
 
