@@ -1,4 +1,5 @@
 module.exports = {
-    WELCOME: 'welocme',
-    ORDER_COMPLETE: 'orderComplete'
+    WELCOME: 'welcome',
+    ORDER_COMPLETE: 'orderComplete',
+    FORGOT_PASSWORD: 'forgotPassword'
 };

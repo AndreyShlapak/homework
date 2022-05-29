@@ -9,5 +9,10 @@ module.exports = {
     [emailActionsEnum.ORDER_COMPLETE]: {
         subject: 'Ypu order is Complete',
         templateName: 'orderDone'
+    },
+
+    [emailActionsEnum.FORGOT_PASSWORD]: {
+        subject: 'Forgot password?',
+        templateName: 'forgotPassword'
     }
 };

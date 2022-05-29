@@ -21,8 +21,26 @@ authRouter.post(
 
 authRouter.post(
     '/refresh',
-    authMiddleware.checkToken(tokenTypeEnum.REFRESH, 'refresh_token'),
+    authMiddleware.checkToken(tokenTypeEnum.REFRESH),
     authController.refresh
+);
+
+authRouter.post(
+    '/password/forgot',
+    userMiddleware.getUserDynamically('email'),
+    authController.forgotPassword
+);
+
+authRouter.patch(
+    '/password/forgot',
+    authMiddleware.checkToken(tokenTypeEnum.ACTION),
+    authController.setNewPassword
+);
+
+authRouter.patch(
+    '/password/change',
+    authMiddleware.checkToken(),
+    authController.setNewPassword
 );
 
 module.exports = authRouter;

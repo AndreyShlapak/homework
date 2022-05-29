@@ -1,4 +1,5 @@
 module.exports = {
+    actionTypesEnum: require('./action-types.enum'),
     userRolesEnum: require('./user-roles.enum'),
     carTypesEnum: require('./car-types.enum'),
     constants: require('./constants'),
