@@ -1,18 +1,50 @@
 const { authService } = require('../services');
-const { authValidator } = require('../validators');
 const ApiError = require('../error/ApiError');
 const { tokenTypeEnum, errorsEnum: {NO_TOKEN, NOT_VALID_TOKEN} } = require('../constants');
-const { OAuth, ActionToken } = require('../DB')
+const { OAuth, ActionToken } = require('../DB');
+const { passwordValidator, emailValidator, authValidator } = require('../validators');
 
 function isLoginDataValid(req, res, next) {
     try {
-        const { value, error } = authValidator.loginSchema.validate(req.body);
+        const { value, error } = authValidator.validate(req.body);
 
         if (error) {
             throw new ApiError(error.details[0].message);
         }
 
         req.body = value;
+
+        next();
+    } catch (e) {
+        next(e);
+    }
+}
+
+function isEmailValid(req, res, next) {
+    try {
+        const { value, error } = emailValidator.validate({ email : req.body.email });
+
+        if (error) {
+            throw new ApiError(error.details[0].message);
+        }
+
+        req.body.email = value.email;
+
+        next();
+    } catch (e) {
+        next(e);
+    }
+}
+
+function isPasswordValid(req, res, next) {
+    try {
+        const { value, error } = passwordValidator.validate({ password : req.body.password });
+
+        if (error) {
+            throw new ApiError(error.details[0].message);
+        }
+
+        req.body.password = value.password;
 
         next();
     } catch (e) {
@@ -51,5 +83,7 @@ function checkToken(tokenType = tokenTypeEnum.ACCESS) {
 
 module.exports = {
     isLoginDataValid,
-    checkToken
+    checkToken,
+    isEmailValid,
+    isPasswordValid
 };

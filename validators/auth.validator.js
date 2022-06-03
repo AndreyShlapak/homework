@@ -7,6 +7,4 @@ const loginSchema = Joi.object({
     password: Joi.string().regex(constants.PASSWORD_REGEXP).required()
 });
 
-module.exports = {
-    loginSchema
-}
+module.exports = loginSchema;

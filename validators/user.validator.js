@@ -4,7 +4,7 @@ const { constants } = require('../constants');
 
 const userCarSubSchema = Joi.object({
     model: Joi.string()
-})
+});
 
 const newUserJoiSchema = Joi.object({
     name: Joi.string().alphanum().min(2).max(50).trim(),

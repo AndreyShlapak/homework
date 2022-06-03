@@ -108,7 +108,7 @@ const getUserDynamically = (paramName = '_id', where = 'body', dataBaseField = p
 
             req.user = user;
 
-            next()
+            next();
         } catch (e) {
             next(e)
         }
